@@ -22,11 +22,12 @@ fn main() {
 
 fn init() {
     let result = Command::new("pip")
-            .args(&["install", "yapf"])
+            .args(&["install", "-Iv", "yapf==0.30.0", "--target", "packages"])
             .output();
 
-    if let Err(_) = result {
-        eprintln!("[dprint-plugin-yapf]: Failed to run `pip install yapf`. Please ensure yapf is installed.");
+    if let Err(err) = result {
+        eprintln!("[dprint-plugin-yapf]: {}", err.to_string());
+        panic!("[dprint-plugin-yapf]: Failed to install yapf.");
     }
 }
 

@@ -1,5 +1,10 @@
-import argparse
 import sys
+import os
+packages_dir = os.path.normpath(
+    os.path.dirname(os.path.realpath(__file__)) + "/packages")
+sys.path.insert(0, str(packages_dir))
+
+import argparse
 import struct
 import json
 import io
@@ -203,7 +208,7 @@ with io.open(sys.stdin.fileno(), 'rb', buffering=0) as stdin:
                         stdin, stdout,
                         json.dumps({
                             "name": "dprint-plugin-yapf",
-                            "version": "0.1.0",
+                            "version": "0.1.1",
                             "configKey": "yapf",
                             "fileExtensions": ["py"],
                             "helpUrl": "https://dprint.dev/plugins/yapf",
