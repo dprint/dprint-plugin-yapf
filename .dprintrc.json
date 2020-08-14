@@ -12,6 +12,6 @@
   "plugins": [
     "https://plugins.dprint.dev/typescript-0.29.0.wasm",
     "https://plugins.dprint.dev/json-0.7.0.wasm",
-    "https://plugins.dprint.dev/yapf-0.1.1.exe-plugin@20d85ab5abaf60a9c3d08f34880a8aacb5cf846b274dc960eca588f7457bcbc3"
+    "https://plugins.dprint.dev/yapf-0.1.0.exe-plugin@8287da752ad5c71653f5b4ae1edd29d67b879a42126f2305c9bb653f1a49d554"
   ]
 }
