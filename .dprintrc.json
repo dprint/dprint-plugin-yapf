@@ -5,13 +5,14 @@
   "yapf": {
     "based_on_style": "pep8"
   },
-  "includes": ["**/*.{py,json,js,ts}"],
+  "includes": ["**/*.{py,json,js,ts,md}"],
   "excludes": [
     "executable/target"
   ],
   "plugins": [
     "https://plugins.dprint.dev/typescript-0.29.0.wasm",
     "https://plugins.dprint.dev/json-0.7.0.wasm",
-    "https://plugins.dprint.dev/yapf-0.1.0.exe-plugin@8287da752ad5c71653f5b4ae1edd29d67b879a42126f2305c9bb653f1a49d554"
+    "https://plugins.dprint.dev/markdown-0.4.0.wasm",
+    "https://plugins.dprint.dev/yapf-0.1.0.exe-plugin@ec45d2523526ae6c350a7320cf3c76b78474d358e3e58ace008774aee31d45e1"
   ]
 }
