@@ -153,9 +153,8 @@ jobs:
 
           Dependencies:
 
-          1. Install python and pip
-          2. Ensure `python`/`python.exe` & pip is available on the path
-          3. Ensure dprint >= 0.9.0
+          1. Install python and pip and ensure they're on the path.
+          2. Install dprint's CLI >= 0.9.0
 
           In *.dprintrc.json*:
 

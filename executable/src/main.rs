@@ -25,21 +25,19 @@ fn main() {
 }
 
 fn init() {
+    // I tried getting this to work by installing a local yapf version,
+    // but there seems to be some bugs in pip where it can't use the --target <dir path>
+    // on linux without a --system flag. The --system flag then doesn't exist on
+    // windows or mac, so it's just a pain and I'm not going to bother with it for now
     let exe_dir_path = get_exe_dir_path();
-    let _ = Command::new("mkdir")
-            .current_dir(&exe_dir_path)
-            .args(&["packages"]);
     let result = Command::new("pip")
             .current_dir(&exe_dir_path)
-            // needs --system because otherwise ubuntu errors
-            // https://github.com/pypa/pip/issues/3826#issuecomment-427622702
-            .args(&["install", "-Iv", "yapf==0.30.0", "--target", "packages", "--system"])
-            .stderr(Stdio::inherit())
+            .args(&["install", "yapf"])
+            // .stderr(Stdio::inherit())
             .output();
 
     if let Err(err) = result {
-        eprintln!("[dprint-plugin-yapf]: {}", err.to_string());
-        panic!("[dprint-plugin-yapf]: Failed to install yapf.");
+        eprintln!("[dprint-plugin-yapf]: Failed to install yapf. You may need to run `pip install yapf` manually. {}", err.to_string());
     }
 }
 

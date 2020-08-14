@@ -1,9 +1,4 @@
 import sys
-import os
-packages_dir = os.path.normpath(
-    os.path.dirname(os.path.realpath(__file__)) + "/packages")
-sys.path.insert(0, str(packages_dir))
-
 import argparse
 import struct
 import json
