@@ -5,8 +5,9 @@ const packageText = fs.readFileSync("main.py", { encoding: "utf8" });
 // "version": "x.x.x"
 const version = packageText.match(/\"version\":\s*\"(\d+\.\d+\.\d+)\"/)[1];
 
-if (!/^\d+\.\d+\.\d+$/.test(version))
+if (!/^\d+\.\d+\.\d+$/.test(version)) {
     throw new Error("Error extracting version.");
+}
 
 const outputFile = {
     schemaVersion: 1,

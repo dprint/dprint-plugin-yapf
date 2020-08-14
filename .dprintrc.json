@@ -1,0 +1,17 @@
+{
+  "$schema": "https://dprint.dev/schemas/v0.json",
+  "projectType": "openSource",
+  "incremental": true,
+  "yapf": {
+    "based_on_style": "pep8"
+  },
+  "includes": ["**/*.{py,json,js,ts}"],
+  "excludes": [
+    "executable/target"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.29.0.wasm",
+    "https://plugins.dprint.dev/json-0.7.0.wasm",
+    "https://plugins.dprint.dev/yapf-0.1.0.exe-plugin@0b2dffab28afa7856d71faf969d3e7ac4ced0f4e371d645adeb8a16198a6d104"
+  ]
+}
