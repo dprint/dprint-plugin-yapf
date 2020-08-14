@@ -1,6 +1,8 @@
+use std::process::{Command, Stdio};
+use std::path::PathBuf;
+
 mod parent_process_checker;
 use parent_process_checker::start_parent_process_checker_thread;
-use std::process::{Command, Stdio};
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -11,30 +13,40 @@ fn main() {
         init();
     }
 
+    let exe_dir_path = get_exe_dir_path();
     Command::new("python")
-            .args(&["-u", "main.py"]) // -u for unbuffered stdin/stdout
-            .stdin(Stdio::inherit())
-            .stderr(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .spawn()
-            .expect("failed to run python on path");
+        .current_dir(&exe_dir_path)
+        .args(&["-u", "main.py"]) // -u for unbuffered stdin/stdout
+        .stdin(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .spawn()
+        .expect("failed to run python on path");
 }
 
 fn init() {
-    let exe_file_path = std::env::current_exe().expect("expected to get the executable file path");
-    let exe_dir_path = exe_file_path.parent().expect("expected to get executable directory path");
+    let exe_dir_path = get_exe_dir_path();
     let _ = Command::new("mkdir")
-            .current_dir(exe_dir_path)
+            .current_dir(&exe_dir_path)
             .args(&["packages"]);
     let result = Command::new("pip")
-            .current_dir(exe_dir_path)
-            .args(&["install", "-Iv", "yapf==0.30.0", "--target", "packages"])
+            .current_dir(&exe_dir_path)
+            // needs --system because otherwise ubuntu errors
+            // https://github.com/pypa/pip/issues/3826#issuecomment-427622702
+            .args(&["install", "-Iv", "yapf==0.30.0", "--target", "packages", "--system"])
+            .stderr(Stdio::inherit())
             .output();
 
     if let Err(err) = result {
         eprintln!("[dprint-plugin-yapf]: {}", err.to_string());
         panic!("[dprint-plugin-yapf]: Failed to install yapf.");
     }
+}
+
+fn get_exe_dir_path() -> PathBuf {
+    let exe_file_path = std::env::current_exe().expect("expected to get the executable file path");
+    let exe_dir_path = exe_file_path.parent().expect("expected to get executable directory path");
+    exe_dir_path.to_path_buf()
 }
 
 fn is_init(args: &Vec<String>) -> bool {
