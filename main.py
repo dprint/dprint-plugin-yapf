@@ -208,7 +208,7 @@ with io.open(sys.stdin.fileno(), 'rb', buffering=0) as stdin:
                         stdin, stdout,
                         json.dumps({
                             "name": "dprint-plugin-yapf",
-                            "version": "0.1.1",
+                            "version": "0.1.0",
                             "configKey": "yapf",
                             "fileExtensions": ["py"],
                             "helpUrl": "https://dprint.dev/plugins/yapf",

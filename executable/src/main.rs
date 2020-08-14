@@ -21,7 +21,13 @@ fn main() {
 }
 
 fn init() {
+    let exe_file_path = std::env::current_exe().expect("expected to get the executable file path");
+    let exe_dir_path = exe_file_path.parent().expect("expected to get executable directory path");
+    let _ = Command::new("mkdir")
+            .current_dir(exe_dir_path)
+            .args(&["packages"]);
     let result = Command::new("pip")
+            .current_dir(exe_dir_path)
             .args(&["install", "-Iv", "yapf==0.30.0", "--target", "packages"])
             .output();
 
