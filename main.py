@@ -3,6 +3,13 @@ import argparse
 import struct
 import json
 import io
+import os
+
+# Need to add the local `packages` dir that was setup during the plugin's
+# initialization and where yapf was installed.
+# See https://stackoverflow.com/a/4383597/188246
+sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)) + "/packages")
+
 from yapf.yapflib.yapf_api import FormatCode
 import traceback
 

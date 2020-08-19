@@ -1,5 +1,6 @@
 use std::process::{Command, Stdio};
 use std::path::PathBuf;
+use std::fs;
 
 mod parent_process_checker;
 use parent_process_checker::start_parent_process_checker_thread;
@@ -25,20 +26,36 @@ fn main() {
 }
 
 fn init() {
-    // I tried getting this to work by installing a local yapf version,
-    // but there seems to be some bugs in pip where it can't use the --target <dir path>
-    // on linux without a --system flag. The --system flag then doesn't exist on
-    // windows or mac, so it's just a pain and I'm not going to bother with it for now
-    let exe_dir_path = get_exe_dir_path();
-    let result = Command::new("pip")
-            .current_dir(&exe_dir_path)
-            .args(&["install", "yapf"])
-            // .stderr(Stdio::inherit())
-            .output();
+    eprintln!("[dprint-plugin-yapf]: Installing yapf...");
 
-    if let Err(err) = result {
-        eprintln!("[dprint-plugin-yapf]: Failed to install yapf. You may need to run `pip install yapf` manually. {}", err.to_string());
-    }
+    // Install the latest version of pip to a temporary directory.
+    // This is necessary because the version bundled with python is too old to
+    // do `--target <dir path>` (buggy and doesn't work reliably across systems).
+    // See https://github.com/denoland/deno/blob/5f1df038fb1462607af3555fa7431c05ca484dce/tools/third_party.py#L61
+    let exe_dir_path = get_exe_dir_path();
+    let temp_python_user_base_dir = exe_dir_path.join("temp");
+    fs::create_dir_all(&temp_python_user_base_dir).expect(&format!("Expected to be able to create a temporary directory at {}", temp_python_user_base_dir.display()));
+
+    Command::new("python")
+            .current_dir(&exe_dir_path)
+            .env("PYTHONUSERBASE", &temp_python_user_base_dir)
+            .args(&["-m", "pip", "install", "--user", "pip==20.2.2"])
+            .stderr(Stdio::inherit())
+            .output()
+            .expect("Error installing pip locally.");
+
+    // Install yapf to a local `packages` directory
+    let packages_dir = exe_dir_path.join("packages");
+    fs::create_dir_all(&packages_dir).expect(&format!("Expected to be able to create a directory at {}", packages_dir.display()));
+    Command::new("python")
+            .current_dir(&exe_dir_path)
+            .env("PYTHONUSERBASE", &temp_python_user_base_dir)
+            .args(&["-m", "pip", "install", "--target", &packages_dir.to_string_lossy(), "yapf==0.30.0"])
+            .stderr(Stdio::inherit())
+            .output()
+            .expect("Error installing yapf locally.");
+
+    fs::remove_dir_all(&temp_python_user_base_dir).expect("Error removing temp directory.");
 }
 
 fn get_exe_dir_path() -> PathBuf {
