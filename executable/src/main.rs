@@ -26,7 +26,7 @@ fn main() {
 }
 
 fn init() {
-    eprintln!("[dprint-plugin-yapf]: Installing yapf...");
+    eprintln!("Installing yapf...");
 
     // Install the latest version of pip to a temporary directory.
     // This is necessary because the version bundled with python is too old to

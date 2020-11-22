@@ -21,23 +21,6 @@ def eprint(message):
     sys.stderr.flush()
 
 
-def send_success(stdout):
-    write_int(stdout, 0)  # success
-    stdout.flush()
-
-
-def send_failure(stdin, stdout, message):
-    encoded_message = message.encode('utf-8')
-    write_int(stdout, 1)  # error
-    write_variable_data(stdin, stdout, encoded_message)
-
-
-def send_int(stdout, value):
-    write_int(stdout, 0)  # success
-    write_int(stdout, value)
-    stdout.flush()
-
-
 def write_int(stdout, value):
     stdout.write(struct.pack('>I', value))
 
@@ -48,10 +31,24 @@ def read_int(stdin):
     return struct.unpack_from('>I', value)[0]
 
 
-def send_string(stdin, stdout, value):
-    encoded_value = value.encode('utf-8')
-    write_int(stdout, 0)  # success
-    write_variable_data(stdin, stdout, encoded_value)
+def write_success_bytes(stdout):
+    stdout.write(b'\xFF\xFF\xFF\xFF')
+
+
+def read_success_bytes(stdin):
+    value = bytearray(4)
+    bytes_read = stdin.readinto(value)
+    if value != b'\xFF\xFF\xFF\xFF':
+        sys.exit(
+            "Catastrophic error where success bytes were not found. Found: " +
+            value)
+
+
+def strict_write(stdout, view):
+    bytes_written_len = stdout.write(view)
+    if bytes_written_len != len(view):
+        sys.exit("Bytes written of " + bytes_written_len +
+                 " did not equal the expected length of " + len(view))
 
 
 def write_variable_data(stdin, stdout, value):
@@ -73,17 +70,40 @@ def write_variable_data(stdin, stdout, value):
         index = end_index
 
 
-def strict_write(stdout, view):
-    bytes_written_len = stdout.write(view)
-    if bytes_written_len != len(view):
-        eprint("Bytes written of " + bytes_written_len +
-               " did not equal the expected length of " + len(view))
-        process.exit(1)
+def send_success(stdout):
+    write_int(stdout, 0)  # success
+    write_success_bytes(stdout)
+    stdout.flush()
 
 
-def read_string(stdin, stdout):
-    data = read_variable_data(stdin, stdout)
-    return data.decode('utf-8')
+def send_failure(stdin, stdout, message):
+    encoded_message = message.encode('utf-8')
+    write_int(stdout, 1)  # error
+    write_variable_data(stdin, stdout, encoded_message)
+    write_success_bytes(stdout)
+    stdout.flush()
+
+
+def send_int(stdout, value):
+    write_int(stdout, 0)  # success
+    write_int(stdout, value)
+    write_success_bytes(stdout)
+    stdout.flush()
+
+
+def send_string(stdin, stdout, value):
+    encoded_value = value.encode('utf-8')
+    write_int(stdout, 0)  # success
+    write_variable_data(stdin, stdout, encoded_value)
+    write_success_bytes(stdout)
+    stdout.flush()
+
+
+def strict_read(stdin, view):
+    bytes_read_len = stdin.readinto(view)
+    if bytes_read_len != len(view):
+        sys.exit("Bytes read of " + bytes_read_len +
+                 " did not equal the expected length of " + len(view))
 
 
 def read_variable_data(stdin, stdout):
@@ -110,12 +130,9 @@ def read_variable_data(stdin, stdout):
     return result
 
 
-def strict_read(stdin, view):
-    bytes_read_len = stdin.readinto(view)
-    if bytes_read_len != len(view):
-        eprint("Bytes read of " + bytes_read_len +
-               " did not equal the expected length of " + len(view))
-        process.exit(1)
+def read_string(stdin, stdout):
+    data = read_variable_data(stdin, stdout)
+    return data.decode('utf-8')
 
 
 def get_license_text():
@@ -198,40 +215,48 @@ with io.open(sys.stdin.fileno(), 'rb', buffering=0) as stdin:
 
         while True:
             message_kind = read_int(stdin)
-
             try:
                 if message_kind == 8:  # close
+                    read_success_bytes(stdin)
                     sys.exit(0)
                     break
                 elif message_kind == 0:  # get plugin schema version
-                    send_int(stdout, 2)
+                    read_success_bytes(stdin)
+                    send_int(stdout, 3)
                 elif message_kind == 1:  # get plugin info
+                    read_success_bytes(stdin)
                     send_string(
                         stdin, stdout,
                         json.dumps({
                             "name": "dprint-plugin-yapf",
-                            "version": "0.1.1",
+                            "version": "0.2.0",
                             "configKey": "yapf",
                             "fileExtensions": ["py"],
                             "helpUrl": "https://dprint.dev/plugins/yapf",
                             "configSchemaUrl": ""
                         }))
                 elif message_kind == 2:  # get license text
+                    read_success_bytes(stdin)
                     send_string(stdin, stdout, get_license_text())  #todo
                 elif message_kind == 3:  # get resolved config
+                    read_success_bytes(stdin)
                     send_string(stdin, stdout, "{}")  # todo
                 elif message_kind == 4:  # set global config
                     global_config = json.loads(read_string(stdin, stdout))
+                    read_success_bytes(stdin)
                     send_success(stdout)
                 elif message_kind == 5:  # set plugin config
                     plugin_config = json.loads(read_string(stdin, stdout))
+                    read_success_bytes(stdin)
                     send_success(stdout)
                 elif message_kind == 6:  # get configuration diagnostics
+                    read_success_bytes(stdin)
                     send_string(stdin, stdout, "[]")  # todo
                 elif message_kind == 7:  # format text
                     file_path = read_string(stdin, stdout)  # todo: file path
                     file_text = read_string(stdin, stdout)
                     override_config = json.loads(read_string(stdin, stdout))
+                    read_success_bytes(stdin)
 
                     resolved_config = get_resolved_config(
                         global_config, plugin_config, override_config)
@@ -247,6 +272,8 @@ with io.open(sys.stdin.fileno(), 'rb', buffering=0) as stdin:
                         write_int(stdout, 0)  # success
                         write_int(stdout, 1)  # file changed
                         write_variable_data(stdin, stdout, encoded_text)
+                        write_success_bytes(stdout)
+                        stdout.flush()
                 else:
                     raise ValueError("Unexpected message kind: " +
                                      str(message_kind))
