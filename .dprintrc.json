@@ -10,9 +10,9 @@
     "executable/target"
   ],
   "plugins": [
-    "https://plugins.dprint.dev/typescript-0.29.0.wasm",
-    "https://plugins.dprint.dev/json-0.7.0.wasm",
-    "https://plugins.dprint.dev/markdown-0.4.0.wasm",
-    "https://plugins.dprint.dev/yapf-0.1.0.exe-plugin@ec45d2523526ae6c350a7320cf3c76b78474d358e3e58ace008774aee31d45e1"
+    "https://plugins.dprint.dev/typescript-0.33.0.wasm",
+    "https://plugins.dprint.dev/json-0.7.2.wasm",
+    "https://plugins.dprint.dev/markdown-0.4.2.wasm",
+    "https://plugins.dprint.dev/yapf-0.2.0.exe-plugin@14c42b703709e81f813c6674a8110c522af0ea78b6298f4f73721121a1a03701"
   ]
 }
