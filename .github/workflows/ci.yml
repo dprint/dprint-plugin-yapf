@@ -156,7 +156,7 @@ jobs:
           1. Install python and ensure it's on the path.
           2. Install dprint's CLI >= 0.9.0
 
-          In *.dprintrc.json*:
+          In *dprint.json*:
 
           1. Specify the plugin url and checksum in the `"plugins"` array:
 

@@ -2,7 +2,7 @@
 # To run:
 # 1. Comment out osx and linux `getPlatformObject` and change the reference line to point to zip output `./${zipFileName}` in scripts/createPluginFile.js
 # 2. Run `./scripts/createForTestingOnWindows.ps1`
-# 3. Update .dprintrc.json to point at ./yapf.exe-plugin then update checksum as shown when initially run.
+# 3. Update dprint.json to point at ./yapf.exe-plugin then update checksum as shown when initially run.
 
 cd executable
 cargo build --release --locked --all-targets --verbose
