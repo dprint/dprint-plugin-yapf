@@ -140,7 +140,7 @@ def get_license_text():
 
 The MIT License (MIT)
 
-Copyright (c) 2020 David Sherret
+Copyright (c) 2020-2022 David Sherret
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -228,12 +228,19 @@ with io.open(sys.stdin.fileno(), 'rb', buffering=0) as stdin:
                     send_string(
                         stdin, stdout,
                         json.dumps({
-                            "name": "dprint-plugin-yapf",
-                            "version": "0.2.0",
-                            "configKey": "yapf",
+                            "name":
+                            "dprint-plugin-yapf",
+                            "version":
+                            "0.2.0",
+                            "configKey":
+                            "yapf",
                             "fileExtensions": ["py"],
-                            "helpUrl": "https://dprint.dev/plugins/yapf",
-                            "configSchemaUrl": ""
+                            "helpUrl":
+                            "https://dprint.dev/plugins/yapf",
+                            "configSchemaUrl":
+                            "",
+                            "updateUrl":
+                            "https://plugins.dprint.dev/dprint/dprint-plugin-yapf/latest.json"
                         }))
                 elif message_kind == 2:  # get license text
                     read_success_bytes(stdin)
