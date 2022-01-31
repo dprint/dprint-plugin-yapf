@@ -231,7 +231,7 @@ with io.open(sys.stdin.fileno(), 'rb', buffering=0) as stdin:
                             "name":
                             "dprint-plugin-yapf",
                             "version":
-                            "0.2.1",
+                            "0.3.0",
                             "configKey":
                             "yapf",
                             "fileExtensions": ["py"],
