@@ -13,6 +13,6 @@
     "https://plugins.dprint.dev/typescript-0.62.1.wasm",
     "https://plugins.dprint.dev/json-0.7.2.wasm",
     "https://plugins.dprint.dev/markdown-0.12.1.wasm",
-    "https://plugins.dprint.dev/yapf-0.2.0.exe-plugin@14c42b703709e81f813c6674a8110c522af0ea78b6298f4f73721121a1a03701"
+    "https://plugins.dprint.dev/yapf-0.2.1.exe-plugin@5f9e484ae7ee913ff7a9bf37e956fc13f0126732e272bbf64cf91936b05a4cee"
   ]
 }

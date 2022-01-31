@@ -39,7 +39,7 @@ fn init() {
     Command::new("python")
             .current_dir(&exe_dir_path)
             .env("PYTHONUSERBASE", &temp_python_user_base_dir)
-            .args(&["-m", "pip", "install", "--user", "pip==20.2.2"])
+            .args(&["-m", "pip", "install", "--user", "pip==22.0.2"])
             .stderr(Stdio::inherit())
             .output()
             .expect("Error installing pip locally.");
@@ -50,7 +50,7 @@ fn init() {
     Command::new("python")
             .current_dir(&exe_dir_path)
             .env("PYTHONUSERBASE", &temp_python_user_base_dir)
-            .args(&["-m", "pip", "install", "--target", &packages_dir.to_string_lossy(), "yapf==0.30.0"])
+            .args(&["-m", "pip", "install", "--target", &packages_dir.to_string_lossy(), "yapf==0.32.0"])
             .stderr(Stdio::inherit())
             .output()
             .expect("Error installing yapf locally.");
